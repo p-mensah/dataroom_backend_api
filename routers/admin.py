@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException, Depends, status
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials  # Changed this line
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from datetime import datetime
 from typing import List
 import secrets
@@ -11,7 +11,7 @@ from services.auth_service import AuthService
 
 security = HTTPBearer()
 
-def get_current_admin(credentials: HTTPAuthorizationCredentials = Depends(security)):  # Changed this line
+def get_current_admin(credentials: HTTPAuthorizationCredentials = Depends(security)):  
     token = credentials.credentials
     payload = AuthService.verify_token(token)
     if not payload:

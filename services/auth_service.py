@@ -14,19 +14,48 @@ ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24  # 24 hours
 
 class AuthService:
+    """
+    Provides authentication and authorization services.
+    """
     @staticmethod
     def hash_password(password: str) -> str:
-        """Hash a password for storing."""
+        """
+        Hashes a password for storing.
+
+        Args:
+            password: The password to hash.
+
+        Returns:
+            The hashed password.
+        """
         return pwd_context.hash(password)
     
     @staticmethod
     def verify_password(plain_password: str, hashed_password: str) -> bool:
-        """Verify a stored password against one provided by user."""
+        """
+        Verifies a stored password against one provided by the user.
+
+        Args:
+            plain_password: The password to verify.
+            hashed_password: The hashed password to compare against.
+
+        Returns:
+            True if the passwords match, False otherwise.
+        """
         return pwd_context.verify(plain_password, hashed_password)
     
     @staticmethod
     def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:
-        """Create JWT access token."""
+        """
+        Creates a JWT access token.
+
+        Args:
+            data: The data to encode in the token.
+            expires_delta: The optional expiration time for the token.
+
+        Returns:
+            The encoded JWT access token.
+        """
         to_encode = data.copy()
         if expires_delta:
             expire = datetime.utcnow() + expires_delta
@@ -39,7 +68,15 @@ class AuthService:
     
     @staticmethod
     def verify_token(token: str) -> Optional[dict]:
-        """Verify and decode JWT token."""
+        """
+        Verifies and decodes a JWT token.
+
+        Args:
+            token: The JWT token to verify.
+
+        Returns:
+            The decoded token payload if verification is successful, otherwise None.
+        """
         try:
             payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[ALGORITHM])
             return payload
@@ -48,7 +85,16 @@ class AuthService:
     
     @staticmethod
     def authenticate_admin(email: str, password: str) -> Optional[dict]:
-        """Authenticate admin user."""
+        """
+        Authenticates an admin user.
+
+        Args:
+            email: The admin's email.
+            password: The admin's password.
+
+        Returns:
+            The admin's data if authentication is successful, otherwise None.
+        """
         admin = admin_users_collection.find_one({"email": email})
         if not admin:
             return None
@@ -62,7 +108,20 @@ class AuthService:
     
     @staticmethod
     def create_admin_user(email: str, password: str, full_name: str) -> dict:
-        """Create a new admin user."""
+        """
+        Creates a new admin user.
+
+        Args:
+            email: The new admin's email.
+            password: The new admin's password.
+            full_name: The new admin's full name.
+
+        Returns:
+            A dictionary containing the new admin's ID, email, and full name.
+
+        Raises:
+            ValueError: If an admin with the same email already exists.
+        """
         # Check if admin exists
         existing_admin = admin_users_collection.find_one({"email": email})
         if existing_admin:
@@ -80,7 +139,15 @@ class AuthService:
     
     @staticmethod
     def get_admin_by_id(admin_id: str) -> Optional[dict]:
-        """Get admin user by ID."""
+        """
+        Gets an admin user by their ID.
+
+        Args:
+            admin_id: The ID of the admin to retrieve.
+
+        Returns:
+            The admin's data if found, otherwise None.
+        """
         try:
             admin = admin_users_collection.find_one({"_id": ObjectId(admin_id)})
             if admin:
@@ -93,7 +160,17 @@ class AuthService:
     
     @staticmethod
     def change_password(admin_id: str, old_password: str, new_password: str) -> bool:
-        """Change admin password."""
+        """
+        Changes an admin's password.
+
+        Args:
+            admin_id: The ID of the admin whose password is to be changed.
+            old_password: The admin's current password.
+            new_password: The new password.
+
+        Returns:
+            True if the password was successfully changed, False otherwise.
+        """
         try:
             admin = admin_users_collection.find_one({"_id": ObjectId(admin_id)})
             if not admin:

@@ -4,8 +4,22 @@ from email.mime.multipart import MIMEMultipart
 from config import settings
 
 class EmailService:
+    """
+    Handles the sending of emails for various application events.
+    """
     @staticmethod
     def send_email(to_email: str, subject: str, body: str):
+        """
+        Sends an email.
+
+        Args:
+            to_email: The recipient's email address.
+            subject: The email subject.
+            body: The email body.
+
+        Returns:
+            True if the email was sent successfully, False otherwise.
+        """
         msg = MIMEMultipart()
         msg['From'] = settings.FROM_EMAIL
         msg['To'] = to_email
@@ -24,6 +38,13 @@ class EmailService:
     
     @staticmethod
     def send_access_request_confirmation(email: str, name: str):
+        """
+        Sends a confirmation email for a new access request.
+
+        Args:
+            email: The recipient's email address.
+            name: The recipient's name.
+        """
         subject = "Access Request Received - SAYeTECH Dataroom"
         body = f"""
         <h2>Thank you for your interest, {name}</h2>
@@ -34,6 +55,12 @@ class EmailService:
     
     @staticmethod
     def send_admin_notification(request_data: dict):
+        """
+        Sends a notification to the admin about a new access request.
+
+        Args:
+            request_data: A dictionary containing the access request data.
+        """
         subject = "New Dataroom Access Request"
         body = f"""
         <h2>New Access Request</h2>
@@ -47,6 +74,14 @@ class EmailService:
     
     @staticmethod
     def send_access_approved(email: str, name: str, token: str):
+        """
+        Sends an email notifying the user that their access request has been approved.
+
+        Args:
+            email: The recipient's email address.
+            name: The recipient's name.
+            token: The access token.
+        """
         subject = "Access Approved - SAYeTECH Dataroom"
         link = f"https://dataroom.sayetech.com/access?token={token}"
         body = f"""
@@ -59,6 +94,14 @@ class EmailService:
     
     @staticmethod
     def send_access_denied(email: str, name: str, reason: str = ""):
+        """
+        Sends an email notifying the user that their access request has been denied.
+
+        Args:
+            email: The recipient's email address.
+            name: The recipient's name.
+            reason: The reason for denial.
+        """
         subject = "Access Request Update - SAYeTECH Dataroom"
         body = f"""
         <h2>Hello {name},</h2>

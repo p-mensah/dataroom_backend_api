@@ -11,7 +11,19 @@ from services.auth_service import AuthService
 
 security = HTTPBearer()
 
-def get_current_admin(credentials: HTTPAuthorizationCredentials = Depends(security)):  
+def get_current_admin(credentials: HTTPAuthorizationCredentials = Depends(security)):
+    """
+    Verifies the authentication token and returns the current admin user's data.
+
+    Args:
+        credentials: The HTTP authorization credentials.
+
+    Returns:
+        The admin user's data as a dictionary.
+
+    Raises:
+        HTTPException: If the token is invalid or missing.
+    """
     token = credentials.credentials
     payload = AuthService.verify_token(token)
     if not payload:
@@ -22,6 +34,15 @@ router = APIRouter(prefix="/api/admin", tags=["Admin"])
 
 @router.get("/access-requests", response_model=List[dict])
 def list_access_requests(status: str = None):
+    """
+    Lists all access requests, optionally filtering by status.
+
+    Args:
+        status: The status to filter by (e.g., "pending", "approved").
+
+    Returns:
+        A list of access requests.
+    """
     query = {"status": status} if status else {}
     requests = list(access_requests_collection.find(query))
     
@@ -32,6 +53,19 @@ def list_access_requests(status: str = None):
 
 @router.put("/access-requests/{request_id}")
 def update_access_request(request_id: str, update: AccessRequestUpdate):
+    """
+    Updates an access request's status and admin notes.
+
+    Args:
+        request_id: The ID of the access request to update.
+        update: An `AccessRequestUpdate` object containing the update data.
+
+    Returns:
+        A dictionary with a success message.
+
+    Raises:
+        HTTPException: If the request is not found.
+    """
     request = access_requests_collection.find_one({"_id": ObjectId(request_id)})
     if not request:
         raise HTTPException(status_code=404, detail="Request not found")

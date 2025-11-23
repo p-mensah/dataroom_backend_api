@@ -1,3 +1,10 @@
+"""
+Initializes the MongoDB database connection and collections.
+
+This module sets up the connection to the MongoDB server using the URL
+defined in the application's settings. It also provides easy access to
+the different collections used throughout the application.
+"""
 from pymongo import MongoClient
 from config import settings
 

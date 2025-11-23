@@ -1,6 +1,12 @@
 from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
+    """
+    Manages the application's configuration settings.
+
+    This class automatically loads environment variables from a `.env` file,
+    allowing for easy customization of application settings.
+    """
     APP_NAME: str = "SAYeTECH Investor Dataroom"
     MONGODB_URL: str = "mongodb+srv://dataroom:dataroom@grow-cohort6.safmckr.mongodb.net/"
     DATABASE_NAME: str = "investor_dataroom"

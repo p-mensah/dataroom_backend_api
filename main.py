@@ -25,8 +25,20 @@ app.include_router(admin_router)
 
 @app.get("/")
 def root():
+    """
+    Returns a welcome message for the API root.
+
+    Returns:
+        dict: A dictionary containing a welcome message.
+    """
     return {"message": "SAYeTECH Investor Dataroom API"}
 
 @app.get("/health")
 def health():
+    """
+    Returns the health status of the API.
+
+    Returns:
+        dict: A dictionary containing the health status.
+    """
     return {"status": "healthy"}

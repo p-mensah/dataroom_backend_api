@@ -9,6 +9,15 @@ router = APIRouter(prefix="/api/access-requests", tags=["Access Requests"])
 
 @router.post("/", response_model=dict)
 def create_access_request(request: AccessRequestCreate):
+    """
+    Creates a new access request.
+
+    Args:
+        request: An `AccessRequestCreate` object containing the request data.
+
+    Returns:
+        A dictionary with a success message and the ID of the new request.
+    """
     request_data = {
         **request.model_dump(),
         "status": "pending",
@@ -30,6 +39,18 @@ def create_access_request(request: AccessRequestCreate):
 
 @router.get("/{request_id}", response_model=dict)
 def get_access_request(request_id: str):
+    """
+    Retrieves a specific access request by its ID.
+
+    Args:
+        request_id: The ID of the access request to retrieve.
+
+    Returns:
+        The access request data as a dictionary.
+
+    Raises:
+        HTTPException: If the request is not found.
+    """
     request = access_requests_collection.find_one({"_id": ObjectId(request_id)})
     if not request:
         raise HTTPException(status_code=404, detail="Request not found")

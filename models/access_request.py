@@ -3,6 +3,9 @@ from datetime import datetime
 from typing import Optional
 
 class AccessRequestCreate(BaseModel):
+    """
+    Represents the data required to create a new access request.
+    """
     email: EmailStr
     full_name: str
     company: str
@@ -10,6 +13,9 @@ class AccessRequestCreate(BaseModel):
     message: Optional[str] = None
 
 class AccessRequestResponse(BaseModel):
+    """
+    Represents the data returned for an access request.
+    """
     id: str
     email: str
     full_name: str
@@ -21,6 +27,9 @@ class AccessRequestResponse(BaseModel):
     updated_at: datetime
 
 class AccessRequestUpdate(BaseModel):
+    """
+    Represents the data required to update an access request.
+    """
     status: str
     admin_notes: Optional[str] = None
     expires_at: Optional[datetime] = None

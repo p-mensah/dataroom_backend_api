@@ -8,3 +8,4 @@ python-multipart
 passlib
 python-jose
 bcrypt
+pyotp

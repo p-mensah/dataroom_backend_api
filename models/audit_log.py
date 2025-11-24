@@ -2,6 +2,7 @@ from pydantic import BaseModel
 from datetime import datetime
 from typing import Optional
 
+
 class AuditLogCreate(BaseModel):
     access_request_id: str
     admin_id: Optional[str] = None
@@ -9,6 +10,7 @@ class AuditLogCreate(BaseModel):
     previous_status: Optional[str] = None
     new_status: Optional[str] = None
     notes: Optional[str] = None
+
 
 class AuditLogResponse(BaseModel):
     id: str
@@ -19,6 +21,7 @@ class AuditLogResponse(BaseModel):
     new_status: Optional[str]
     notes: Optional[str]
     timestamp: datetime
+
 
 class AuditLogFilter(BaseModel):
     access_request_id: Optional[str] = None

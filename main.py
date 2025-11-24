@@ -8,7 +8,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from .routers import access_requests, admin, auth, nda, permissions, documents, users
+from routers import access_requests, admin, auth, nda, permissions, documents, users
 from config import settings
 import logging
 

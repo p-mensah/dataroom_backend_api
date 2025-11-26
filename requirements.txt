@@ -18,8 +18,5 @@ cloudinary
 aiofiles
 routers
 jwt
-python-magic-bin
 sib-api-v3-sdk
-pyotp
 qrcode
-pillow

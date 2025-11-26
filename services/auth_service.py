@@ -5,6 +5,42 @@ from typing import Optional
 from config import settings
 from database import admin_users_collection
 from bson import ObjectId
+from fastapi import Depends, HTTPException, status
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+import bcrypt
+
+class AuthService:
+    @staticmethod
+    def hash_password(password: str) -> str:
+        # Truncate to 72 bytes (critical for bcrypt)
+        password = password.encode('utf-8')[:72].decode('utf-8', errors='ignore')
+        salt = bcrypt.gensalt()
+        hashed = bcrypt.hashpw(password.encode('utf-8'), salt)
+        return hashed.decode('utf-8')
+    
+    @staticmethod
+    def verify_password(plain_password: str, hashed_password: str) -> bool:
+        return bcrypt.checkpw(
+            plain_password.encode('utf-8'),
+            hashed_password.encode('utf-8')
+        )
+
+security = HTTPBearer()
+
+def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)):
+    """Dependency to get current authenticated user"""
+    token = credentials.credentials
+    payload = AuthService.verify_token(token)
+    
+    if not payload:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid authentication token"
+        )
+    
+    return payload
+
+
 
 # Password hashing
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")

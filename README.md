@@ -1,377 +1,556 @@
-<!-- <!-- # dataroom_backend_api
+# 🚀 SAYeTECH Investor Dataroom
 
-# Project Structure (Flat - No app folder):
-"""
-dataroom_backend_api/
-├── main.py
-├── config.py
-├── database.py
-├── models/
-│   ├── __init__.py
-│   ├── access_request.py
-│   ├── access_token.py
-│   └── audit_log.py
-├── routers/
-│   ├── __init__.py
-│   ├── access_requests.py
-│   └── admin.py
-├── services/
-│   ├── __init__.py
-│   ├── email_service.py
-│   └── auth_service.py
-├── utils/
-│   ├── __init__.py
-│   └── helpers.py
-├── requirements.txt
-├── .env
-└── README.md -->
+A comprehensive, secure investor dataroom platform built with FastAPI, MongoDB, and Python. This system enables SAYeTECH to manage investor access, share documents, track analytics, and facilitate investor engagement seamlessly.
 
+![Version](https://img.shields.io/badge/version-2.0.0-blue)
+![Python](https://img.shields.io/badge/python-3.9+-green)
+![FastAPI](https://img.shields.io/badge/fastapi-0.109.0-teal)
+![MongoDB](https://img.shields.io/badge/mongodb-4.6+-brightgreen)
 
-# SAYeTECH Investor Dataroom API
+---
 
-A secure, feature-rich investor dataroom with OTP authentication, NDA management, 
-role-based access control, and comprehensive document management.
+## 📋 Table of Contents
 
-## Features
+- [Features](#features)
+- [Architecture](#architecture)
+- [Prerequisites](#prerequisites)
+- [Installation](#installation)
+- [Configuration](#configuration)
+- [Database Setup](#database-setup)
+- [API Documentation](#api-documentation)
+- [Project Structure](#project-structure)
+- [Usage Examples](#usage-examples)
+- [Security Features](#security-features)
+- [Deployment](#deployment)
+- [Contributing](#contributing)
 
-### 1. Access Request Management
-- Investors can request access to the dataroom
-- Email notifications for both investors and admins
-- Status tracking (pending, approved, denied)
+---
 
-### 2. OTP Authentication
-- Secure one-time password login
-- Email-based OTP delivery
-- Configurable expiry and attempt limits
-- JWT token-based session management
+## ✨ Features
 
-### 3. NDA Management
-- Digital NDA acceptance required before document access
-- Timestamp and IP address logging
-- Version control for NDA documents
-- Digital signature capture
+### 🔐 Access Management
+- **Investor Access Requests**: Email-based access request system with approval workflow
+- **Token-based Authentication**: Secure, expiring access tokens for investors
+- **Admin Approval System**: Review, approve, deny, or set expiration dates
+- **Audit Logging**: Complete trail of all access changes
 
-### 4. Role-Based Access Control (RBAC)
-- Three default permission levels:
-  - View Only
-  - Download Allowed
-  - Expiry-Controlled
-- Granular permission management
-- Automatic access expiry
-- Session-level permission enforcement
+### 📄 Document Management
+- **Secure Upload**: Support for PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX (up to 50MB)
+- **Full-Text Search**: Search documents by title, description, tags, and content
+- **Auto-suggestions**: Smart search suggestions as you type
+- **Category & Tag System**: Organize documents efficiently
+- **View/Download Tracking**: Monitor document engagement
 
-### 5. Document Management
-- Six main categories:
-  - Company Overview
-  - Market & Impact
-  - Financials
-  - IP & Technology
-  - Traction
-  - Legal
-- Subcategory support
-- Version control
-- File size validation
-- Multiple file type support
+### 🔍 Advanced Search
+- **Multi-filter Search**: Filter by type, date, category, tags
+- **Search History**: Track investor search patterns
+- **Quick Access**: Recently viewed documents
 
-### 6. Audit & Logging
-- Comprehensive access logging
-- Document view/download tracking
-- Admin action audit trails
-- IP address and user agent tracking
+### 📊 Real-time Analytics
+- **Activity Dashboard**: Live tracking of active users and engagement
+- **Document Heatmap**: Visualize most-viewed and downloaded documents
+- **Investor Activity Reports**: Time spent, documents viewed, last active
+- **Export Functionality**: CSV/PDF reports for any date range
+- **30-second Auto-refresh**: Real-time updates
 
-## Tech Stack
+### 🔔 Smart Alert System
+- **High-Value Investor Alerts**: Notifications when key investors log in
+- **Critical Document Tracking**: Alerts when specific documents are viewed
+- **Session Duration Alerts**: Trigger on extended session times
+- **Multi-channel Notifications**: Email and Slack integration
+- **Configurable Triggers**: Customize alert conditions
 
-- **Backend**: FastAPI (Python 3.8+)
-- **Database**: MongoDB
-- **Authentication**: JWT + OTP (pyotp)
-- **Email**: SMTP (configurable)
-- **File Storage**: Local filesystem (configurable)
+### 💬 Q&A System
+- **In-app Questions**: Investors submit questions directly
+- **Category Tagging**: Organize questions by topic
+- **Public/Private Responses**: Choose visibility for each answer
+- **Email Notifications**: Auto-notify when questions are answered
+- **Search Q&A History**: Find answers to previous questions
 
-## Installation
+### 📅 Meeting Scheduler
+- **Calendar Integration**: Google Calendar/Outlook compatible
+- **Available Time Slots**: Dynamic slot availability checking
+- **Automated Reminders**: 24-hour and 1-hour email reminders
+- **Reschedule/Cancel**: Easy meeting management
+- **Meeting Links**: Auto-generated secure meeting URLs
 
-### Prerequisites
-- Python 3.8+
-- MongoDB 4.4+
-- SMTP server access (Gmail, SendGrid, etc.)
+### 🏢 Company Showcase
+- **Executive Dashboard**: Key metrics and impact indicators
+- **Dynamic Metrics**: Real-time company performance data
+- **Testimonials**: Customer success stories and social proof
+- **Media Coverage**: Press mentions and awards
+- **Investment Summary**: Downloadable one-pagers
 
-### Setup Steps
+### 🔒 Security & Compliance
+- **TLS/SSL Encryption**: Secure data in transit
+- **MongoDB Encryption**: Data at rest protection
+- **GDPR Compliance**: Data export and deletion capabilities
+- **Audit Trails**: Complete security logging
+- **IP Tracking**: Monitor access locations
 
-1. **Clone the repository**
+---
+
+## 🏗 Architecture
+
+```
+┌─────────────────┐
+│   FastAPI API   │
+│   (Python)      │
+└────────┬────────┘
+         │
+    ┌────┴────┐
+    │         │
+┌───▼────┐ ┌─▼──────────┐
+│MongoDB │ │   Redis    │
+│Database│ │   Cache    │
+└────────┘ └────────────┘
+```
+
+**Tech Stack:**
+- **Backend**: FastAPI (Python 3.9+)
+- **Database**: MongoDB Atlas
+- **Cache**: Redis (optional)
+- **File Storage**: Local/Cloud storage
+- **Email**: SMTP (Gmail/SendGrid)
+- **Notifications**: Slack Webhooks
+
+---
+
+## 📦 Prerequisites
+
+- Python 3.9 or higher
+- MongoDB Atlas account (or local MongoDB)
+- SMTP email account (Gmail recommended)
+- Redis (optional, for caching)
+- 2GB RAM minimum
+- 10GB storage minimum
+
+---
+
+## 🚀 Installation
+
+### 1. Clone the Repository
+
 ```bash
-git clone <repository-url>
+git clone https://github.com/p-mensah/dataroom_backend_api.git
 cd dataroom_backend_api
 ```
 
-2. **Create virtual environment**
+### 2. Create Virtual Environment
+
 ```bash
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+python -m venv .venv
+
+# Windows
+.venv\Scripts\activate
+
+# macOS/Linux
+source .venv/bin/activate
 ```
 
-3. **Install dependencies**
+### 3. Install Dependencies
+
 ```bash
 pip install -r requirements.txt
 ```
 
-4. **Configure environment**
+### 4. Create Required Folders
+
 ```bash
-cp .env.example .env
-# Edit .env with your configuration
+# Windows
+mkdir uploads\documents
+type nul > models\__init__.py
+type nul > routers\__init__.py
+type nul > services\__init__.py
+type nul > utils\__init__.py
+
+# macOS/Linux
+mkdir -p uploads/documents
+touch models/__init__.py routers/__init__.py services/__init__.py utils/__init__.py
 ```
 
-5. **Initialize database**
-```bash
-python init_database.py
-```
+---
 
-6. **Run the application**
-```bash
-uvicorn main:app --reload --host 0.0.0.0 --port 8000
-```
+## ⚙️ Configuration
 
-7. **Access the API**
-- API: http://localhost:8000
-- Docs: http://localhost:8000/docs
-- Health: http://localhost:8000/health
+### 1. Create `.env` File
 
-## API Endpoints
+Create a `.env` file in the root directory:
 
-### Authentication
-- `POST /api/auth/request-otp` - Request OTP code
-- `POST /api/auth/verify-otp` - Verify OTP and get token
-- `GET /api/auth/me` - Get current user info
-
-### Access Requests
-- `POST /api/access-requests/` - Submit access request
-- `GET /api/access-requests/{request_id}` - Get request details
-
-### NDA
-- `GET /api/nda/content` - Get NDA content
-- `POST /api/nda/accept` - Accept NDA
-- `GET /api/nda/status` - Check NDA acceptance status
-
-### Permissions
-- `GET /api/permissions/levels` - List permission levels
-- `GET /api/permissions/user/{user_id}/permissions` - Get user permissions
-
-### Documents
-- `GET /api/documents/categories` - List categories
-- `POST /api/documents/upload` - Upload document (Admin)
-- `GET /api/documents/category/{category_id}/documents` - List documents
-- `GET /api/documents/{document_id}` - Get document details
-- `GET /api/documents/{document_id}/download` - Download document
-- `GET /api/documents/{document_id}/view` - View document
-
-### Users
-- `POST /api/users/` - Create user (Admin)
-- `GET /api/users/` - List users (Admin)
-- `GET /api/users/{user_id}` - Get user details
-- `PUT /api/users/{user_id}` - Update user
-
-### Admin
-- `GET /api/admin/access-requests` - List all requests
-- `PUT /api/admin/access-requests/{request_id}` - Update request status
-
-## Security Features
-
-1. **Authentication**
-   - OTP-based login (6-digit code)
-   - JWT token with configurable expiry
-   - Automatic token refresh
-
-2. **Authorization**
-   - Role-based access control
-   - Permission-level enforcement
-   - Session validation
-
-3. **NDA Compliance**
-   - Mandatory acceptance before access
-   - Legal audit trail
-   - IP and timestamp logging
-
-4. **File Security**
-   - File type validation
-   - Size restrictions
-   - Access logging
-   - Download tracking
-
-5. **Audit Trail**
-   - All actions logged
-   - User activity tracking
-   - Admin action monitoring
-
-## Configuration
-
-### Email Settings
-Configure SMTP in `.env`:
 ```env
+# Application
+APP_NAME=SAYeTECH Investor Dataroom
+
+# MongoDB
+MONGODB_URL=mongodb+srv://username:password@cluster.mongodb.net/investor_dataroom?retryWrites=true&w=majority
+DATABASE_NAME=investor_dataroom
+
+# Email Configuration
 SMTP_HOST=smtp.gmail.com
 SMTP_PORT=587
 SMTP_USER=your-email@gmail.com
 SMTP_PASSWORD=your-app-password
+FROM_EMAIL=your-email@gmail.com
+
+# Admin
+ADMIN_EMAIL=admin@sayetech.com
+
+# Security
+SECRET_KEY=your-super-secret-key-change-this-in-production
+
+# File Upload
+UPLOAD_DIR=uploads/documents
+MAX_FILE_SIZE=52428800
+ALLOWED_EXTENSIONS=[".pdf",".doc",".docx",".xls",".xlsx",".ppt",".pptx"]
+
+# Redis (optional)
+REDIS_URL=redis://localhost:6379
+CACHE_TTL=3600
+
+# Slack (optional)
+SLACK_WEBHOOK_URL=https://hooks.slack.com/services/YOUR/WEBHOOK/URL
+
+# Calendly (optional)
+CALENDLY_API_KEY=your-calendly-api-key
 ```
 
-### File Upload Settings
-```env
-MAX_FILE_SIZE_MB=50
-UPLOAD_DIR=./uploads
-ALLOWED_FILE_TYPES=["pdf","doc","docx","xls","xlsx","ppt","pptx"]
+### 2. MongoDB Atlas Setup
+
+1. Create a free cluster at [MongoDB Atlas](https://www.mongodb.com/cloud/atlas)
+2. Create a database user
+3. Whitelist your IP (or use `0.0.0.0/0` for testing)
+4. Get your connection string
+5. Replace `username`, `password`, and `cluster` in the connection string
+
+### 3. Gmail App Password (for Email)
+
+1. Enable 2-Factor Authentication on your Google account
+2. Go to: https://myaccount.google.com/apppasswords
+3. Generate an app password
+4. Use this password in `SMTP_PASSWORD`
+
+---
+
+## 💾 Database Setup
+
+The application will automatically create indexes on startup. To manually verify:
+
+```python
+from database import create_indexes
+create_indexes()
 ```
 
-### Security Settings
-```env
-SECRET_KEY=your-super-secret-key
-OTP_EXPIRY_MINUTES=10
-OTP_MAX_ATTEMPTS=3
-```
-
-## Default Admin Credentials
-
-After running `init_database.py`:
-- **Email**: admin@sayetech.com
-- **Password**: Admin@123!
-
-⚠️ **IMPORTANT**: Change the password immediately after first login!
-
-## Database Collections
-
-- `access_requests` - Access request submissions
+**Collections Created:**
+- `access_requests` - Investor access requests
 - `access_tokens` - Active access tokens
-- `admin_users` - Administrator accounts
+- `investors` - Investor profiles
+- `documents` - Uploaded documents
+- `document_access` - Document view/download logs
+- `qa_threads` - Q&A questions
+- `qa_responses` - Q&A answers
+- `meetings` - Scheduled meetings
+- `alert_configs` - Alert configurations
+- `alert_logs` - Triggered alerts
+- `search_history` - Search queries
+- `company_metrics` - Company KPIs
+- `testimonials` - Customer testimonials
+- `admin_users` - Admin accounts
 - `audit_logs` - System audit trail
-- `users` - Investor user accounts
-- `otp_codes` - OTP codes (auto-expire)
-- `nda_acceptances` - NDA acceptance records
-- `permission_levels` - Permission configurations
-- `document_categories` - Document organization
-- `documents` - Document metadata
-- `document_versions` - Version history
-- `document_access_logs` - Access tracking
 
-## Testing
+---
 
-### Manual Testing with cURL
+## 🚀 Running the Application
 
-**Request OTP:**
+### Development Mode
+
 ```bash
-curl -X POST http://localhost:8000/api/auth/request-otp \
-  -H "Content-Type: application/json" \
-  -d '{"email": "investor@example.com"}'
+uvicorn main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-**Verify OTP:**
+### Production Mode
+
 ```bash
-curl -X POST http://localhost:8000/api/auth/verify-otp \
-  -H "Content-Type: application/json" \
-  -d '{"email": "investor@example.com", "otp_code": "123456"}'
+uvicorn main:app --host 0.0.0.0 --port 8000 --workers 4
 ```
 
-**Access Protected Endpoint:**
-```bash
-curl -X GET http://localhost:8000/api/documents/categories \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+**Access the API:**
+- API: http://localhost:8000
+- Interactive Docs: http://localhost:8000/docs
+- Alternative Docs: http://localhost:8000/redoc
+
+---
+
+## 📚 API Documentation
+
+### Core Endpoints
+
+#### Access Requests
+```http
+POST   /api/access-requests          # Submit access request
+GET    /api/access-requests/{id}     # Get request details
+GET    /api/admin/access-requests    # List all requests (admin)
+PUT    /api/admin/access-requests/{id} # Update request status
 ```
 
-## Production Deployment
+#### Documents
+```http
+POST   /api/documents/upload          # Upload document
+GET    /api/documents/search          # Search documents
+GET    /api/documents/{id}            # Get document details
+POST   /api/documents/{id}/download   # Download document
+GET    /api/documents/categories/list # List categories
+GET    /api/documents/suggestions     # Get search suggestions
+```
 
-### Environment Variables
-- Set strong `SECRET_KEY`
-- Use production SMTP credentials
-- Configure proper CORS origins
-- Enable HTTPS
+#### Q&A
+```http
+POST   /api/qa/threads                    # Create question
+GET    /api/qa/threads                    # List questions
+POST   /api/qa/threads/{id}/respond       # Answer question
+GET    /api/qa/threads/search             # Search Q&A
+```
 
-### Security Checklist
-- [ ] Change default admin password
-- [ ] Set strong SECRET_KEY
-- [ ] Configure CORS properly
-- [ ] Enable HTTPS/TLS
-- [ ] Set up backup strategy
-- [ ] Configure log rotation
-- [ ] Set up monitoring
-- [ ] Review file upload limits
+#### Meetings
+```http
+POST   /api/meetings/schedule             # Schedule meeting
+GET    /api/meetings/available-slots      # Get available times
+GET    /api/meetings/investor/{id}        # Get investor meetings
+PUT    /api/meetings/{id}/cancel          # Cancel meeting
+PUT    /api/meetings/{id}/reschedule      # Reschedule meeting
+```
 
-### Recommended Stack
-- **Web Server**: Nginx
-- **WSGI**: Uvicorn + Gunicorn
-- **Database**: MongoDB Atlas (managed)
-- **Email**: SendGrid or AWS SES
-- **Storage**: AWS S3 or similar
+#### Analytics
+```http
+GET    /api/analytics/dashboard           # Dashboard stats
+GET    /api/analytics/heatmap             # Document heatmap
+GET    /api/analytics/investor/{id}/activity # Investor activity
+GET    /api/analytics/investors/list      # All investor activities
+GET    /api/analytics/export              # Export CSV report
+```
 
-## Support
+#### Company
+```http
+GET    /api/company/metrics               # Get company metrics
+POST   /api/company/metrics               # Update metrics
+GET    /api/company/testimonials          # Get testimonials
+POST   /api/company/testimonials          # Add testimonial
+```
 
-For issues or questions:
-- Email: support@sayetech.com
-- Documentation: https://docs.sayetech.com
+#### Alerts
+```http
+POST   /api/alerts/config                 # Create alert config
+GET    /api/alerts/config                 # List alert configs
+GET    /api/alerts/logs                   # Get alert logs
+```
 
-## License
+---
 
-Proprietary - SAYeTECH © 2025
-"""
+## 📁 Project Structure
 
-# ===============================
-# test_api.py - API Test Script
-# ===============================
-"""
-Simple test script to verify API endpoints
-Run: python test_api.py
-"""
+```
+dataroom_backend_api/
+├── main.py                    # Application entry point
+├── config.py                  # Configuration settings
+├── database.py                # MongoDB connection
+├── requirements.txt           # Python dependencies
+├── .env                       # Environment variables
+├── models/                    # Pydantic models
+│   ├── __init__.py
+│   ├── access_request.py
+│   ├── access_token.py
+│   ├── investor.py
+│   ├── document.py
+│   ├── qa.py
+│   ├── meeting.py
+│   ├── analytics.py
+│   └── audit_log.py
+├── routers/                   # API route handlers
+│   ├── __init__.py
+│   ├── access_requests.py
+│   ├── admin.py
+│   ├── documents.py
+│   ├── qa.py
+│   ├── meetings.py
+│   ├── analytics.py
+│   ├── company.py
+│   └── alerts.py
+├── services/                  # Business logic
+│   ├── __init__.py
+│   ├── email_service.py
+│   ├── auth_service.py
+│   ├── document_service.py
+│   ├── analytics_service.py
+│   ├── alert_service.py
+│   └── meeting_service.py
+├── utils/                     # Helper functions
+│   ├── __init__.py
+│   └── helpers.py
+└── uploads/                   # File storage
+    └── documents/
+```
 
+---
+
+## 💡 Usage Examples
+
+### 1. Submit Access Request
+
+```python
 import requests
-import json
 
-BASE_URL = "http://localhost:8000"
+response = requests.post("http://localhost:8000/api/access-requests", json={
+    "email": "investor@example.com",
+    "full_name": "John Doe",
+    "company": "Investment Firm LLC",
+    "phone": "+1234567890",
+    "message": "Interested in learning more about SAYeTECH"
+})
 
-def test_health():
-    """Test health endpoint"""
-    response = requests.get(f"{BASE_URL}/health")
-    print(f"Health Check: {response.status_code}")
-    print(response.json())
-    print()
+print(response.json())
+# {"message": "Access request submitted successfully", "id": "..."}
+```
 
-def test_request_access():
-    """Test access request submission"""
-    data = {
-        "email": "investor@example.com",
-        "full_name": "John Investor",
-        "company": "Investment Firm LLC",
-        "phone": "+1234567890",
-        "message": "Interested in Series A investment"
-    }
-    
-    response = requests.post(f"{BASE_URL}/api/access-requests/", json=data)
-    print(f"Access Request: {response.status_code}")
-    print(response.json())
-    print()
-    return response.json().get("id")
+### 2. Search Documents
 
-def test_list_categories():
-    """Test listing document categories"""
-    response = requests.get(f"{BASE_URL}/api/documents/categories")
-    print(f"List Categories (no auth): {response.status_code}")
-    print(response.json() if response.status_code != 401 else "Authentication required")
-    print()
+```python
+response = requests.get("http://localhost:8000/api/documents/search", params={
+    "query": "financial statements",
+    "category": "financials",
+    "investor_id": "investor_123"
+})
 
-def test_permission_levels():
-    """Test listing permission levels"""
-    response = requests.get(f"{BASE_URL}/api/permissions/levels")
-    print(f"Permission Levels: {response.status_code}")
-    print(json.dumps(response.json(), indent=2))
-    print()
+documents = response.json()
+```
 
-def main():
-    print("=" * 60)
-    print("SAYeTECH Dataroom API - Test Script")
-    print("=" * 60)
-    print()
-    
-    test_health()
-    test_permission_levels()
-    request_id = test_request_access()
-    test_list_categories()
-    
-    print("=" * 60)
-    print("Test Complete!")
-    print("=" * 60)
+### 3. Schedule Meeting
 
-if __name__ == "__main__":
-    main() -->
+```python
+response = requests.post("http://localhost:8000/api/meetings/schedule", json={
+    "scheduled_at": "2025-01-15T14:00:00",
+    "duration_minutes": 30,
+    "notes": "Q4 investment discussion"
+}, params={"investor_id": "investor_123"})
+```
+
+### 4. Get Analytics Dashboard
+
+```python
+response = requests.get("http://localhost:8000/api/analytics/dashboard")
+stats = response.json()
+print(f"Active users: {stats['active_users']}")
+```
+
+---
+
+## 🔒 Security Features
+
+- **JWT Authentication**: Secure token-based auth
+- **Password Hashing**: Bcrypt with salt
+- **Input Validation**: Pydantic model validation
+- **File Type Validation**: Whitelist-based file uploads
+- **Rate Limiting**: Prevent abuse (configurable)
+- **CORS Protection**: Configurable origins
+- **SQL Injection Prevention**: MongoDB parameterized queries
+- **XSS Protection**: Input sanitization
+- **HTTPS**: TLS/SSL encryption in production
+
+---
+
+## 🌐 Deployment
+
+### Docker Deployment
+
+```dockerfile
+FROM python:3.9-slim
+
+WORKDIR /app
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+```
+
+```bash
+docker build -t dataroom-api .
+docker run -p 8000:8000 --env-file .env dataroom-api
+```
+
+### Production Checklist
+
+- [ ] Change `SECRET_KEY` to a secure random string
+- [ ] Set specific CORS origins (not `*`)
+- [ ] Enable HTTPS/SSL certificates
+- [ ] Set up MongoDB backups
+- [ ] Configure Redis for caching
+- [ ] Set up monitoring (Sentry, DataDog)
+- [ ] Enable rate limiting
+- [ ] Set up CDN for static files
+- [ ] Configure firewall rules
+- [ ] Set up automated backups
+
+---
+
+## 🧪 Testing
+
+```bash
+# Install test dependencies
+pip install pytest pytest-asyncio httpx
+
+# Run tests
+pytest tests/
+```
+
+---
+
+## 📈 Performance Optimization
+
+- **Database Indexing**: Automatically created on startup
+- **Caching**: Redis caching for frequently accessed data
+- **CDN**: Serve static files via CDN
+- **Compression**: Gzip response compression
+- **Connection Pooling**: MongoDB connection pooling
+- **Async Operations**: Non-blocking file operations
+
+---
+
+## 🤝 Contributing
+
+We welcome contributions! Please follow these steps:
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+---
+
+## 📄 License
+
+This project is proprietary and confidential. All rights reserved by SAYeTECH.
+
+---
+
+## 📞 Support
+
+For questions or issues:
+- **Email**: admin@sayetech.com
+- **GitHub Issues**: [Create an issue](https://github.com/p-mensah/dataroom_backend_api/issues)
+- **Documentation**: [Full docs](https://docs.sayetech.com)
+
+---
+
+## 🙏 Acknowledgments
+
+Built with:
+- [FastAPI](https://fastapi.tiangolo.com/)
+- [MongoDB](https://www.mongodb.com/)
+- [Pydantic](https://pydantic-docs.helpmanual.io/)
+- [Python](https://www.python.org/)
+
+---
+
+**Made with ❤️ by the SAYeTECH Team**

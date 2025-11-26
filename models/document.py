@@ -1,51 +1,103 @@
+# # models/document.py
+# from pydantic import BaseModel
+# from datetime import datetime
+# from typing import Optional, List
+
+# class DocumentCategoryCreate(BaseModel):
+#     name: str
+#     description: Optional[str] = None
+
+# class DocumentCategoryResponse(DocumentCategoryCreate):  # This is the missing one for the import
+#     id: str
+
+# class DocumentCreate(BaseModel):
+#     title: str
+#     description: Optional[str] = None
+#     category: str
+#     tags: List[str] = []
+
+# class DocumentResponse(BaseModel):
+#     id: str
+#     title: str
+#     description: Optional[str]
+#     file_path: str
+#     file_type: str
+#     category: str
+#     file_size: int
+#     uploaded_at: datetime
+#     tags: List[str]
+#     view_count: int
+#     download_count: int
+
+# class DocumentUpload(BaseModel):  # Also needed by import chain
+#     name: str
+#     category_id: str
+#     file_path: str
+#     uploaded_at: Optional[datetime] = None
+
+# class DocumentSearch(BaseModel):
+#     query: Optional[str] = None
+#     category: Optional[str] = None
+#     date_from: Optional[datetime] = None
+#     date_to: Optional[datetime] = None
+#     tags: Optional[List[str]] = None
+
+# class DocumentAccessLog(BaseModel): # If imported elsewhere
+#     document_id: str
+#     user_id: str
+#     action: str  # e.g., "view", "download"
+#     timestamp: datetime = datetime.utcnow()
+
+
+
+
+
+
 from pydantic import BaseModel
 from datetime import datetime
 from typing import Optional, List
 
-
 class DocumentCategoryCreate(BaseModel):
     name: str
-    slug: str
     description: Optional[str] = None
-    parent_category_id: Optional[str] = None
-    sort_order: int = 0
 
-
-class DocumentCategoryResponse(BaseModel):
+class DocumentCategoryResponse(DocumentCategoryCreate):  # This was added earlier
     id: str
-    name: str
-    slug: str
-    description: Optional[str]
-    parent_category_id: Optional[str]
-    sort_order: int
-    is_active: bool
-    created_at: datetime
 
-
-class DocumentUpload(BaseModel):
+class DocumentCreate(BaseModel):
     title: str
     description: Optional[str] = None
-    category_id: str
-
+    category: str
+    tags: List[str] = []
 
 class DocumentResponse(BaseModel):
     id: str
-    category_id: str
     title: str
     description: Optional[str]
-    file_name: str
+    file_path: str
     file_type: str
+    category: str
     file_size: int
-    version_number: int
-    is_latest_version: bool
-    uploaded_by: str
     uploaded_at: datetime
-    updated_at: datetime
+    tags: List[str]
+    view_count: int
+    download_count: int
 
+class DocumentUpload(BaseModel):  # This was added earlier
+    name: str
+    category_id: str
+    file_path: str
+    uploaded_at: Optional[datetime] = None
 
-class DocumentAccessLog(BaseModel):
+class DocumentAccessLog(BaseModel):  # Add this class
     document_id: str
     user_id: str
-    action: str
-    ip_address: str
-    user_agent: str
+    action: str  # e.g., "view", "download"
+    timestamp: datetime = datetime.utcnow()
+
+class DocumentSearch(BaseModel):
+    query: Optional[str] = None
+    category: Optional[str] = None
+    date_from: Optional[datetime] = None
+    date_to: Optional[datetime] = None
+    tags: Optional[List[str]] = None

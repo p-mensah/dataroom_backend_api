@@ -7,6 +7,14 @@ from bson import ObjectId
 from pymongo.errors import DuplicateKeyError
 from typing import Dict
 from bson.errors import InvalidId
+from database import access_requests_collection
+from services.email_service import EmailService
+from models.access_request import AccessRequestCreate, AccessRequestResponse
+from config import settings
+
+
+
+
 router = APIRouter(prefix="/api/access-requests", tags=["Access Requests"])
 
 

@@ -1,3 +1,25 @@
+from models.admin import (
+    AdminRole,
+    AdminCreate,
+    AdminLogin,
+    AdminResponse,
+    AdminUpdate,
+    ChangePassword,
+    TokenResponse,
+)
+
+# Add to __all__ list:
+__all__ = [
+    # ... existing exports ...
+    "AdminRole",
+    "AdminCreate",
+    "AdminLogin",
+    "AdminResponse",
+    "AdminUpdate",
+    "ChangePassword",
+    "TokenResponse",
+]
+
 from models.access_request import (
     AccessRequestCreate,
     AccessRequestResponse,

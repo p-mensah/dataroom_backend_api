@@ -9,3 +9,17 @@ passlib
 python-jose
 bcrypt
 pyotp
+python-magic
+pillow
+redis
+apscheduler
+httpx
+cloudinary
+aiofiles
+routers
+jwt
+python-magic-bin
+sib-api-v3-sdk
+pyotp
+qrcode
+pillow

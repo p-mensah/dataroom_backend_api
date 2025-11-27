@@ -7,7 +7,7 @@ python-dotenv
 python-multipart
 passlib
 python-jose
-bcrypt
+bcrypt==4.0.1
 pyotp
 python-magic
 pillow
@@ -19,3 +19,5 @@ aiofiles
 routers
 jwt
 sib-api-v3-sdk
+pyotp
+qrcode

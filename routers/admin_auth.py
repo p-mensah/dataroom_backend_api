@@ -37,9 +37,9 @@ admin_router = APIRouter(prefix="/api/admin", tags=["Admin Management"])
 auth_router = APIRouter(prefix="/api/auth", tags=["User Authentication"])
 security = HTTPBearer()
 
-# ===============================
+
 # Dependencies: Authentication
-# ===============================
+
 def get_current_admin(credentials: HTTPAuthorizationCredentials = Depends(security)):
     """Get current authenticated admin from token"""
     token = credentials.credentials
@@ -115,9 +115,8 @@ def require_admin(current_admin: dict = Depends(get_current_admin)):
         )
     return current_admin
 
-# ===============================
 # Admin Auth Routes - Public
-# ===============================
+
 @admin_auth_router.post("/register", response_model=dict)
 def register_user(admin: AdminCreate):
     """Register a new user (public endpoint)"""
@@ -126,7 +125,7 @@ def register_user(admin: AdminCreate):
             email=admin.email,
             password=admin.password,
             full_name=admin.full_name,
-            role="user"  # Force user role for public registration
+            role="user"  
         )
         return result
     except ValueError as e:

@@ -39,7 +39,7 @@ class Settings(BaseSettings):
     # Meeting Scheduler
     CALENDLY_API_KEY: str = ""
     
-    # Cloudinary Configuration (FIXED - added colons, strings in quotes)
+    # Cloudinary Configuration 
     CLOUDINARY_CLOUD_NAME: str = "drqnsoj4r"
     CLOUDINARY_API_KEY: str = "375988834613743"
     CLOUDINARY_API_SECRET: str = "-lGDY543embEy5Oral5slkFer7k"

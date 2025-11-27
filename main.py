@@ -67,16 +67,6 @@ def root():
 def health():
     return {"status": "healthy"}
 
-@app.get("/api/info")
-def api_info():
-    return {
-        "app_name": settings.APP_NAME,
-        "database": settings.DATABASE_NAME,
-        "otp_expiry_minutes": settings.OTP_EXPIRY_MINUTES,
-        "max_file_size_mb": settings.MAX_FILE_SIZE_MB,
-        "allowed_file_types": settings.ALLOWED_FILE_TYPES,
-    }
-
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)

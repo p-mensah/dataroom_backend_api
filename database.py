@@ -49,4 +49,4 @@ def create_indexes():
     otp_codes_collection.create_index([("created_at", ASCENDING)], expireAfterSeconds=600)  # Auto-delete after 10 min
     otp_attempts_collection.create_index([("email", ASCENDING)])
     
-    print("✅ Indexes created successfully")
+    print("Indexes created successfully")

@@ -19,5 +19,4 @@ aiofiles
 routers
 jwt
 sib-api-v3-sdk
-pyotp
 qrcode

@@ -42,6 +42,9 @@ def create_indexes():
     documents_collection.create_index([("uploaded_at", ASCENDING)])
     document_access_collection.create_index([("investor_id", ASCENDING), ("timestamp", ASCENDING)])
     investors_collection.create_index([("email", ASCENDING)], unique=True)
+    admin_users_collection.create_index([("username", ASCENDING)], unique=True, sparse=True)
+    admin_users_collection.create_index([("email", ASCENDING)], unique=True)
+
     
     # NEW: OTP indexes
     otp_codes_collection.create_index([("email", ASCENDING)])

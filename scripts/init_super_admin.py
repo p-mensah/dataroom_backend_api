@@ -40,7 +40,7 @@ def create_super_admin():
     print(f"   Email: root@sayetech.com")
     print(f"   Password: admin@admin")
     print(f"   ID: {result.inserted_id}")
-    print("\n⚠️  IMPORTANT: Change the password after first login!")
+    print("\n  IMPORTANT: Change the password after first login!")
 
 if __name__ == "__main__":
     create_super_admin()

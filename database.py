@@ -1,6 +1,7 @@
 
 from pymongo import MongoClient, ASCENDING, TEXT
 from config import settings
+from routers import access_requests
 
 client = MongoClient(settings.MONGODB_URL)
 db = client[settings.DATABASE_NAME]
@@ -49,7 +50,7 @@ def create_indexes():
     # NEW: OTP indexes
     otp_codes_collection.create_index([("email", ASCENDING)])
     otp_codes_collection.create_index([("expires_at", ASCENDING)])
-    otp_codes_collection.create_index([("created_at", ASCENDING)], expireAfterSeconds=600)  # Auto-delete after 10 min
+    otp_codes_collection.create_index([("created_at", ASCENDING)], expireAfterSeconds=600) 
     otp_attempts_collection.create_index([("email", ASCENDING)])
     
     print("Indexes created successfully")

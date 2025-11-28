@@ -12,6 +12,7 @@ from fastapi.responses import JSONResponse
 from routers.admin_auth import admin_auth_router, admin_router, auth_router
 
 # Import other routers directly from their files
+from routers.access_requests import router as access_requests_router
 from routers.nda import router as nda_router
 from routers.permissions import router as permissions_router
 from routers.documents import router as documents_router
@@ -47,6 +48,7 @@ app.include_router(auth_router)         # /api/auth/* - User OTP authentication 
 app.include_router(nda_router)
 app.include_router(permissions_router)
 app.include_router(documents_router)
+app.include_router(access_requests_router)
 
 @app.get("/")
 def root():

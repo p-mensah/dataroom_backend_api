@@ -101,10 +101,8 @@ def require_admin(user_data: dict = Depends(get_current_user_from_token)):
         )
     return user_data
 
-# ===============================
-# Document Categories Endpoints
-# ===============================
 
+# Document Categories Endpoints
 @router.get("/categories/list")
 async def get_categories_list():
     """Get list of available document categories (enum values)"""
@@ -200,9 +198,8 @@ async def upload_document(
     
     return result
 
-# ===============================
+
 # Document Listing & Search
-# ===============================
 
 @router.get("/", response_model=List[DocumentResponse])
 async def list_documents(
@@ -264,9 +261,8 @@ async def get_documents_by_category(
         "documents": documents
     }
 
-# ===============================
+
 # Document Retrieval
-# ===============================
 
 @router.get("/{document_id}", response_model=DocumentResponse)
 async def get_document(
@@ -346,9 +342,8 @@ async def download_document(
     from fastapi.responses import RedirectResponse
     return RedirectResponse(url=file_url)
 
-# ===============================
 # Document Management
-# ===============================
+
 
 @router.delete("/{document_id}")
 async def delete_document(
@@ -428,9 +423,9 @@ async def update_document(
     
     raise HTTPException(status_code=400, detail="No updates provided")
 
-# ===============================
+
 # Statistics & Admin
-# ===============================
+
 
 @router.get("/stats/by-category")
 async def get_category_stats(

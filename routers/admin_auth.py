@@ -112,10 +112,10 @@ def get_current_user_or_admin(credentials: HTTPAuthorizationCredentials = Depend
             detail="Invalid or expired token"
         )
     
-    # Try admin collection first (includes super admin, admin, and users created by admin)
+    # Check if in admin collection
     user = admin_users_collection.find_one({"_id": ObjectId(payload["sub"])})
     
-    # If not in admin collection, try regular users collection
+    # Check if in user collection
     if not user:
         user = users_collection.find_one({"_id": ObjectId(payload["sub"])})
     
@@ -494,70 +494,70 @@ def update_access_request(
 # User Authentication Routes - OTP
 
 
-@auth_router.post("/request-otp", response_model=OTPResponse)
-def request_otp(otp_request: OTPRequest):
-    """Request OTP for user login"""
-    user = users_collection.find_one({"email": otp_request.email})
+# @auth_router.post("/request-otp", response_model=OTPResponse)
+# def request_otp(otp_request: OTPRequest):
+#     """Request OTP for user login"""
+#     user = users_collection.find_one({"email": otp_request.email})
     
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="User not found"
-        )
+#     if not user:
+#         raise HTTPException(
+#             status_code=status.HTTP_404_NOT_FOUND,
+#             detail="User not found"
+#         )
     
-    if not user.get("is_active", False):
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="User account is inactive"
-        )
+#     if not user.get("is_active", False):
+#         raise HTTPException(
+#             status_code=status.HTTP_403_FORBIDDEN,
+#             detail="User account is inactive"
+#         )
     
-    success = OTPService.send_otp(otp_request.email)
+#     success = OTPService.send_otp(otp_request.email)
     
-    if not success:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Failed to send OTP"
-        )
+#     if not success:
+#         raise HTTPException(
+#             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+#             detail="Failed to send OTP"
+#         )
     
-    return OTPResponse(
-        message="OTP sent successfully to your email",
-        expires_in_minutes=10
-    )
+#     return OTPResponse(
+#         message="OTP sent successfully to your email",
+#         expires_in_minutes=10
+#     )
 
 
-@auth_router.post("/verify-otp", response_model=dict)
-def verify_otp(otp_verify: OTPVerify):
-    """Verify OTP and return access token"""
-    result = OTPService.verify_otp(otp_verify.email, otp_verify.otp_code)
+# @auth_router.post("/verify-otp", response_model=dict)
+# def verify_otp(otp_verify: OTPVerify):
+#     """Verify OTP and return access token"""
+#     result = OTPService.verify_otp(otp_verify.email, otp_verify.otp_code)
     
-    if not result:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid or expired OTP"
-        )
+#     if not result:
+#         raise HTTPException(
+#             status_code=status.HTTP_401_UNAUTHORIZED,
+#             detail="Invalid or expired OTP"
+#         )
     
-    # Create JWT access token
-    token_data = {
-        "sub": result["user_id"],
-        "email": result["email"],
-        "full_name": result["full_name"]
-    }
+#     # Create JWT access token
+#     token_data = {
+#         "sub": result["user_id"],
+#         "email": result["email"],
+#         "full_name": result["full_name"]
+#     }
     
-    access_token = AuthService.create_access_token(token_data)
+#     access_token = AuthService.create_access_token(token_data)
     
-    return {
-        "access_token": access_token,
-        "token_type": "bearer",
-        "user": {
-            "id": result["user_id"],
-            "email": result["email"],
-            "full_name": result["full_name"]
-        }
-    }
+#     return {
+#         "access_token": access_token,
+#         "token_type": "bearer",
+#         "user": {
+#             "id": result["user_id"],
+#             "email": result["email"],
+#             "full_name": result["full_name"]
+#         }
+#     }
 
 
-@auth_router.get("/me", response_model=UserResponse)
-def get_current_user_info(user: dict = Depends(get_current_user)):
-    """Get current authenticated user information"""
-    user["id"] = str(user.pop("_id"))
-    return UserResponse(**user)
+# @auth_router.get("/me", response_model=UserResponse)
+# def get_current_user_info(user: dict = Depends(get_current_user)):
+#     """Get current authenticated user information"""
+#     user["id"] = str(user.pop("_id"))
+#     return UserResponse(**user)

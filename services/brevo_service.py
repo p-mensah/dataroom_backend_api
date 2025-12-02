@@ -42,7 +42,7 @@ class BrevoService:
         <body>
             <div class="container">
                 <div class="header">
-                    <h1>🔐 OTP Verification</h1>
+                    <h1> OTP Verification</h1>
                     <p>{settings.APP_NAME}</p>
                 </div>
                 <div class="content">
@@ -56,7 +56,7 @@ class BrevoService:
                     </div>
                     
                     <div class="warning">
-                        <strong>⚠️ Security Notice:</strong>
+                        <strong> Security Notice:</strong>
                         <ul style="margin: 10px 0 0 0; padding-left: 20px;">
                             <li>Never share this code with anyone</li>
                             <li>SAYeTECH will never ask for your OTP</li>

@@ -14,9 +14,11 @@ pillow
 redis
 apscheduler
 httpx
+requests 
 cloudinary
 aiofiles
 routers
 jwt
 sib-api-v3-sdk
 qrcode
+motor

@@ -1,21 +1,25 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
+from typing import Optional, List
 from datetime import datetime
-from typing import Optional
 
-class QAThreadCreate(BaseModel):
-    question: str
+class QuestionCreate(BaseModel):
+    question_text: str = Field(..., min_length=10)
     category: str
-    is_public: bool = False
+    is_urgent: bool = False
 
-class QAResponseCreate(BaseModel):
-    response_text: str
+class AnswerCreate(BaseModel):
+    answer_text: str = Field(..., min_length=5)
+    is_public: bool = False
 
 class QAThreadResponse(BaseModel):
     id: str
-    investor_id: str
-    question: str
+    question_text: str
     category: str
-    status: str
-    created_at: datetime
+    asked_by: str
+    asked_at: datetime
+    answer_text: Optional[str] = None
+    answered_by: Optional[str] = None
+    answered_at: Optional[datetime] = None
     is_public: bool
-    responses: list = []
+    is_urgent: bool
+    status: str  # "pending", "answered", "archived"

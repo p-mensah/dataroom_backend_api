@@ -6,17 +6,19 @@ class Settings(BaseSettings):
     MONGODB_URL: str = "mongodb+srv://dataroom:dataroom@grow-cohort6.safmckr.mongodb.net/investor_dataroom?retryWrites=true&w=majority"
     DATABASE_NAME: str = "investor_dataroom"
     
-     # Brevo (Sendinblue) Configuration
+    # Brevo (Sendinblue) Configuration
     BREVO_API_KEY: str = "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" 
-    BREVO_SENDER_EMAIL: str = "noreply@sayetech.com"
+    BREVO_SENDER_EMAIL: str = "dataroom@sayetech.io"
     BREVO_SENDER_NAME: str = "SAYeTECH Dataroom"
 
-    # Email Configuration
-    SMTP_HOST: str = "smtp.gmail.com"
-    SMTP_PORT: int = 587
-    SMTP_USER: str = ""
-    SMTP_PASSWORD: str = ""
-    FROM_EMAIL: str = ""
+    # SMTP Configuration for sayetech.io
+    SMTP_HOST: str = "mail.sayetech.io"
+    SMTP_PORT: int = 587  # SSL port
+    SMTP_USER: str = "dataroom@sayetech.io"
+    SMTP_PASSWORD: str = "4gh5ui#$usvt"  
+    FROM_EMAIL: str = "dataroom@sayetech.io"
+    SMTP_USE_TLS: bool = False
+    SMTP_USE_SSL: bool = True
     
     # Admin Configuration
     ADMIN_EMAIL: str = "admin@sayetech.com"
@@ -46,8 +48,5 @@ class Settings(BaseSettings):
     
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
-
-
 settings = Settings()
-
 

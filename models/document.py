@@ -76,7 +76,7 @@ class DocumentUpload(BaseModel):
 class DocumentAccessLog(BaseModel):
     document_id: str
     user_id: str
-    action: str  # e.g., "view", "download"
+    action: str  
     timestamp: datetime = Field(default_factory=datetime.utcnow)
     ip_address: Optional[str] = None  
     user_agent: Optional[str] = None  

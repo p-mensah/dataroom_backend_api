@@ -261,10 +261,8 @@ async def update_email_template(
     return {"message": "Email template updated successfully", "template": template}
 
 
-# ============================================
-# ADMIN MANAGEMENT (Super Admin Only)
-# ============================================
 
+# ADMIN MANAGEMENT (Super Admin Only)
 
 class AdminCreate(BaseModel):
     """Create admin model"""
@@ -379,9 +377,7 @@ async def delete_admin(admin_id: str, current_admin: dict = Depends(get_current_
     return {"admin_id": admin_id, "message": "Admin deactivated successfully"}
 
 
-# ============================================
 # SYSTEM HEALTH & MONITORING
-# ============================================
 
 
 @router.get("/system/health")
@@ -402,9 +398,9 @@ async def system_health(current_admin: dict = Depends(get_current_admin)):
     from ..database import (
         access_requests_collection,
         investors_collection,
-        admin_users_collection,  # Changed from admins_collection to admin_users_collection based on database.py
+        admin_users_collection,  
         audit_logs_collection,
-        alert_logs_collection,  # Changed from notifications_collection to alert_logs_collection based on database.py
+        alert_logs_collection,
     )
 
     stats = {

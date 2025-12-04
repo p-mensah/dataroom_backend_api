@@ -5,42 +5,6 @@ from typing import Optional
 from config import settings
 from database import admin_users_collection
 from bson import ObjectId
-from fastapi import Depends, HTTPException, status
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-import bcrypt
-
-class AuthService:
-    @staticmethod
-    def hash_password(password: str) -> str:
-        # Truncate to 72 bytes (critical for bcrypt)
-        password = password.encode('utf-8')[:72].decode('utf-8', errors='ignore')
-        salt = bcrypt.gensalt()
-        hashed = bcrypt.hashpw(password.encode('utf-8'), salt)
-        return hashed.decode('utf-8')
-    
-    @staticmethod
-    def verify_password(plain_password: str, hashed_password: str) -> bool:
-        return bcrypt.checkpw(
-            plain_password.encode('utf-8'),
-            hashed_password.encode('utf-8')
-        )
-
-security = HTTPBearer()
-
-def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)):
-    """Dependency to get current authenticated user"""
-    token = credentials.credentials
-    payload = AuthService.verify_token(token)
-    
-    if not payload:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid authentication token"
-        )
-    
-    return payload
-
-
 
 # Password hashing
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -51,35 +15,74 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24  # 24 hours
 
 class AuthService:
     @staticmethod
+    def _truncate_password(password: str) -> str:
+        """Truncate password to 72 bytes for bcrypt compatibility"""
+        password_bytes = password.encode('utf-8')
+        if len(password_bytes) > 72:
+            return password_bytes[:72].decode('utf-8', errors='ignore')
+        return password
+    
+    @staticmethod
     def hash_password(password: str) -> str:
         """Hash a password for storing."""
-        return pwd_context.hash(password)
+        truncated_password = AuthService._truncate_password(password)
+        return pwd_context.hash(truncated_password)
     
     @staticmethod
     def verify_password(plain_password: str, hashed_password: str) -> bool:
         """Verify a stored password against one provided by user."""
-        return pwd_context.verify(plain_password, hashed_password)
+        truncated_password = AuthService._truncate_password(plain_password)
+        try:
+            return pwd_context.verify(truncated_password, hashed_password)
+        except Exception as e:
+            print(f"Password verification error: {e}")
+            return False
     
     @staticmethod
     def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:
         """Create JWT access token."""
         to_encode = data.copy()
+        
         if expires_delta:
             expire = datetime.utcnow() + expires_delta
         else:
             expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
         
         to_encode.update({"exp": expire})
-        encoded_jwt = jwt.encode(to_encode, settings.SECRET_KEY, algorithm=ALGORITHM)
-        return encoded_jwt
+        
+        try:
+            encoded_jwt = jwt.encode(to_encode, settings.SECRET_KEY, algorithm=ALGORITHM)
+            print(f" Token created, expires at: {expire}")
+            return encoded_jwt
+        except Exception as e:
+            print(f" Error creating token: {e}")
+            raise
     
     @staticmethod
     def verify_token(token: str) -> Optional[dict]:
         """Verify and decode JWT token."""
         try:
             payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[ALGORITHM])
+            
+            # Check expiration
+            exp = payload.get("exp")
+            if exp:
+                exp_datetime = datetime.fromtimestamp(exp)
+                if datetime.utcnow() > exp_datetime:
+                    print(f" Token expired at {exp_datetime}")
+                    return None
+            
+            print(f" Token verified for user: {payload.get('sub')}")
             return payload
-        except JWTError:
+            
+        except jwt.ExpiredSignatureError:
+            print(" Token has expired")
+            return None
+        except jwt.JWTError as e:
+            print(f" JWT Error: {e}")
+            return None
+        except Exception as e:
+            print(f" Token verification error: {e}")
             return None
     
     @staticmethod
@@ -87,11 +90,14 @@ class AuthService:
         """Authenticate admin user."""
         admin = admin_users_collection.find_one({"email": email})
         if not admin:
+            print(f" Admin not found: {email}")
             return None
         
         if not AuthService.verify_password(password, admin["password_hash"]):
+            print(f" Invalid password for: {email}")
             return None
         
+        print(f" Admin authenticated: {email}")
         admin["id"] = str(admin.pop("_id"))
         admin.pop("password_hash")
         return admin
@@ -99,7 +105,6 @@ class AuthService:
     @staticmethod
     def create_admin_user(email: str, password: str, full_name: str) -> dict:
         """Create a new admin user."""
-        # Check if admin exists
         existing_admin = admin_users_collection.find_one({"email": email})
         if existing_admin:
             raise ValueError("Admin user already exists")
@@ -112,6 +117,7 @@ class AuthService:
         }
         
         result = admin_users_collection.insert_one(admin_data)
+        print(f" Admin created: {email}")
         return {"id": str(result.inserted_id), "email": email, "full_name": full_name}
     
     @staticmethod
@@ -123,8 +129,10 @@ class AuthService:
                 admin["id"] = str(admin.pop("_id"))
                 admin.pop("password_hash", None)
                 return admin
+            print(f" Admin not found: {admin_id}")
             return None
-        except:
+        except Exception as e:
+            print(f" Error getting admin: {e}")
             return None
     
     @staticmethod
@@ -136,6 +144,7 @@ class AuthService:
                 return False
             
             if not AuthService.verify_password(old_password, admin["password_hash"]):
+                print(" Old password incorrect")
                 return False
             
             new_hash = AuthService.hash_password(new_password)
@@ -143,6 +152,8 @@ class AuthService:
                 {"_id": ObjectId(admin_id)},
                 {"$set": {"password_hash": new_hash}}
             )
+            print(f" Password changed for: {admin_id}")
             return True
-        except:
+        except Exception as e:
+            print(f" Error changing password: {e}")
             return False

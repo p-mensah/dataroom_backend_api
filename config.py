@@ -24,7 +24,7 @@ class Settings(BaseSettings):
     ADMIN_EMAIL: str = "admin@sayetech.com"
     
     # Security
-    SECRET_KEY: str = "your-secret-key-change-in-production"
+    SECRET_KEY: str = "6IjUCtP4vaR2MLGQFtG94M0RfznmzmsZ"
     
     # File Upload
     UPLOAD_DIR: str = "uploads/documents"
